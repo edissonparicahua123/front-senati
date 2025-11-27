@@ -9,7 +9,7 @@ export default function Home() {
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         const user = localStorage.getItem("user");
-        if (!token || token !== "123") {
+        if (!token) {
             navigate("/");
         } else {
             setUserName(user || "Usuario");

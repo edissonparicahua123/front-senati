@@ -1,22 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
-export default function Login() {
+export default function Register() {
     const navigate = useNavigate();
     const [user, setUser] = useState({
-        username: "",
-        password: ""
+        email: "",
+        password: "",
+        nombres: "",
+        rol: "admin"
     });
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        if (token) {
-            navigate("/home");
-        }
-    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -34,11 +29,16 @@ export default function Login() {
 
     const validate = () => {
         const newErrors = {};
-        if (!user.username.trim()) {
-            newErrors.username = "El usuario es requerido";
+        if (!user.email.trim()) {
+            newErrors.email = "El email es requerido";
+        } else if (!/\S+@\S+\.\S+/.test(user.email)) {
+            newErrors.email = "Email inválido";
         }
-        if (!user.password) {
-            newErrors.password = "La contraseña es requerida";
+        if (!user.password || user.password.length < 6) {
+            newErrors.password = "La contraseña debe tener al menos 6 caracteres";
+        }
+        if (!user.nombres.trim()) {
+            newErrors.nombres = "El nombre es requerido";
         }
         return newErrors;
     };
@@ -53,29 +53,18 @@ export default function Login() {
 
         setIsLoading(true);
         try {
-            console.log("Enviando credenciales:", { email: user.username, password: "***" });
-            const response = await api.post("/auth/login", {
-                email: user.username,
-                password: user.password
-            });
+            console.log("Registrando usuario:", { ...user, password: "***" });
+            const response = await api.post("/auth/register", user);
 
-            console.log("Respuesta del servidor:", response.data);
-            const { token } = response.data;
-
-            // Guardar token y usuario en localStorage
-            localStorage.setItem("authToken", token);
-            localStorage.setItem("user", user.username);
-
-            console.log("Login exitoso, redirigiendo a /home");
-            // Navegar a home
-            navigate("/home");
+            console.log("Usuario registrado exitosamente:", response.data);
+            alert("Cuenta creada exitosamente. Ahora puedes iniciar sesión.");
+            navigate("/");
         } catch (error) {
-            console.error("Error completo:", error);
+            console.error("Error en registro:", error);
             console.error("Respuesta del error:", error.response?.data);
-            console.error("Status del error:", error.response?.status);
             setErrors({
-                username: "Credenciales inválidas",
-                password: error.response?.data?.message || "Usuario o contraseña incorrectos"
+                email: error.response?.data?.message || "Error al crear la cuenta",
+                password: "Por favor verifica los datos"
             });
         } finally {
             setIsLoading(false);
@@ -96,22 +85,36 @@ export default function Login() {
                         </div>
                         <h1 className="text-3xl font-bold text-blue-700 m-0">SENATI</h1>
                     </div>
-                    <p className="text-gray-600 text-sm m-0">Bienvenido de vuelta</p>
+                    <p className="text-gray-600 text-sm m-0">Crear nueva cuenta</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="username" className="text-gray-800 text-sm font-medium">Gmail</label>
+                        <label htmlFor="nombres" className="text-gray-800 text-sm font-medium">Nombre Completo</label>
                         <input
                             type="text"
-                            id="username"
-                            name="username"
-                            value={user.username}
+                            id="nombres"
+                            name="nombres"
+                            value={user.nombres}
                             onChange={handleChange}
-                            placeholder="Ingresa tu gmail"
-                            className={`p-3 border rounded-md text-sm focus:outline-none focus:border-blue-600 ${errors.username ? "border-red-500" : "border-gray-300"}`}
+                            placeholder="Ingresa tu nombre completo"
+                            className={`p-3 border rounded-md text-sm focus:outline-none focus:border-blue-600 ${errors.nombres ? "border-red-500" : "border-gray-300"}`}
                         />
-                        {errors.username && <span className="text-red-500 text-xs">{errors.username}</span>}
+                        {errors.nombres && <span className="text-red-500 text-xs">{errors.nombres}</span>}
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="email" className="text-gray-800 text-sm font-medium">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={user.email}
+                            onChange={handleChange}
+                            placeholder="Ingresa tu email"
+                            className={`p-3 border rounded-md text-sm focus:outline-none focus:border-blue-600 ${errors.email ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -122,10 +125,24 @@ export default function Login() {
                             name="password"
                             value={user.password}
                             onChange={handleChange}
-                            placeholder="Ingresa tu contraseña"
+                            placeholder="Mínimo 6 caracteres"
                             className={`p-3 border rounded-md text-sm focus:outline-none focus:border-blue-600 ${errors.password ? "border-red-500" : "border-gray-300"}`}
                         />
                         {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="rol" className="text-gray-800 text-sm font-medium">Rol</label>
+                        <select
+                            id="rol"
+                            name="rol"
+                            value={user.rol}
+                            onChange={handleChange}
+                            className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-600 bg-white"
+                        >
+                            <option value="admin">Administrador</option>
+                            <option value="user">Usuario</option>
+                        </select>
                     </div>
 
                     <button
@@ -133,11 +150,11 @@ export default function Login() {
                         className="bg-blue-700 text-white border-none p-3 rounded-md text-base font-medium cursor-pointer hover:bg-blue-800 disabled:bg-gray-400 mt-2 transition-colors"
                         disabled={isLoading}
                     >
-                        {isLoading ? "Cargando..." : "Iniciar Sesión"}
+                        {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
                     </button>
 
-                    <div className="text-center text-sm text-gray-600 mt-4">
-                        <p>¿No tienes cuenta? <button type="button" onClick={() => navigate("/register")} className="text-blue-700 font-medium hover:underline bg-transparent border-none cursor-pointer">Regístrate aquí</button></p>
+                    <div className="text-center text-sm text-gray-600">
+                        <p>¿Ya tienes cuenta? <button type="button" onClick={() => navigate("/")} className="text-blue-700 font-medium hover:underline bg-transparent border-none cursor-pointer">Inicia sesión aquí</button></p>
                     </div>
                 </form>
             </div>

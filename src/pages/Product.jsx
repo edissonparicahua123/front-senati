@@ -15,16 +15,14 @@ export default function Product() {
         precio_compra: "",
         precio_venta: "",
         stock_actual: "",
-        stock_minimo: "",
-        id_proveedor: "",
-        id_almacen: ""
+        stock_minimo: ""
     });
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         const user = localStorage.getItem("user");
-        if (!token || token !== "123") {
+        if (!token) {
             navigate("/");
         } else {
             setUserName(user || "Usuario");
@@ -80,9 +78,7 @@ export default function Product() {
             precio_compra: "",
             precio_venta: "",
             stock_actual: "",
-            stock_minimo: "",
-            id_proveedor: "",
-            id_almacen: ""
+            stock_minimo: ""
         });
         setErrors({});
     };
@@ -265,33 +261,7 @@ export default function Product() {
                                 {errors.stock_minimo && <span className="text-red-500 text-xs">{errors.stock_minimo}</span>}
                             </div>
 
-                            {/* ID Proveedor */}
-                            <div className="flex flex-col gap-2">
-                                <label htmlFor="id_proveedor" className="text-gray-800 text-sm font-medium">ID Proveedor (FK)</label>
-                                <input
-                                    type="text"
-                                    id="id_proveedor"
-                                    name="id_proveedor"
-                                    value={product.id_proveedor}
-                                    onChange={handleChange}
-                                    placeholder="Ej: PROV001"
-                                    className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-600 bg-white"
-                                />
-                            </div>
 
-                            {/* ID Almacén */}
-                            <div className="flex flex-col gap-2">
-                                <label htmlFor="id_almacen" className="text-gray-800 text-sm font-medium">ID Almacén (FK)</label>
-                                <input
-                                    type="text"
-                                    id="id_almacen"
-                                    name="id_almacen"
-                                    value={product.id_almacen}
-                                    onChange={handleChange}
-                                    placeholder="Ej: ALM001"
-                                    className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-600 bg-white"
-                                />
-                            </div>
 
                             {/* Botones */}
                             <div className="md:col-span-2 flex gap-4 mt-4">
