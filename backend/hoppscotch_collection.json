@@ -1,0 +1,161 @@
+{
+    "v": 2,
+    "name": "Backend Express CRUD",
+    "folders": [
+        {
+            "v": 2,
+            "name": "Auth",
+            "requests": [
+                {
+                    "v": "1",
+                    "endpoint": "<<base_url>>/auth/register",
+                    "name": "Register",
+                    "params": [],
+                    "headers": [],
+                    "method": "POST",
+                    "auth": {
+                        "authType": "none",
+                        "authActive": true
+                    },
+                    "contentType": "application/json",
+                    "body": {
+                        "contentType": "application/json",
+                        "body": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\",\n  \"nombres\": \"Test User\",\n  \"rol\": \"admin\"\n}"
+                    },
+                    "preRequestScript": "",
+                    "testScript": "",
+                    "isUser": true
+                },
+                {
+                    "v": "1",
+                    "endpoint": "<<base_url>>/auth/login",
+                    "name": "Login",
+                    "params": [],
+                    "headers": [],
+                    "method": "POST",
+                    "auth": {
+                        "authType": "none",
+                        "authActive": true
+                    },
+                    "contentType": "application/json",
+                    "body": {
+                        "contentType": "application/json",
+                        "body": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\"\n}"
+                    },
+                    "preRequestScript": "",
+                    "testScript": "pw.env.set(\"token\", pw.response.body.token);",
+                    "isUser": true
+                }
+            ]
+        },
+        {
+            "v": 2,
+            "name": "Users (Protected)",
+            "requests": [
+                {
+                    "v": "1",
+                    "endpoint": "<<base_url>>/u/users/",
+                    "name": "List Users",
+                    "params": [],
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Bearer <<token>>",
+                            "active": true
+                        }
+                    ],
+                    "method": "GET",
+                    "auth": {
+                        "authType": "none",
+                        "authActive": true
+                    },
+                    "contentType": null,
+                    "body": null,
+                    "preRequestScript": "",
+                    "testScript": "",
+                    "isUser": true
+                },
+                {
+                    "v": "1",
+                    "endpoint": "<<base_url>>/u/users/new/",
+                    "name": "Create User",
+                    "params": [],
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Bearer <<token>>",
+                            "active": true
+                        }
+                    ],
+                    "method": "POST",
+                    "auth": {
+                        "authType": "none",
+                        "authActive": true
+                    },
+                    "contentType": "application/json",
+                    "body": {
+                        "contentType": "application/json",
+                        "body": "{\n  \"username\": \"newuser\",\n  \"password\": \"password123\"\n}"
+                    },
+                    "preRequestScript": "",
+                    "testScript": "",
+                    "isUser": true
+                },
+                {
+                    "v": "1",
+                    "endpoint": "<<base_url>>/u/users/1",
+                    "name": "Update User",
+                    "params": [],
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Bearer <<token>>",
+                            "active": true
+                        }
+                    ],
+                    "method": "PUT",
+                    "auth": {
+                        "authType": "none",
+                        "authActive": true
+                    },
+                    "contentType": "application/json",
+                    "body": {
+                        "contentType": "application/json",
+                        "body": "{\n  \"username\": \"updateduser\",\n  \"password\": \"newpassword123\"\n}"
+                    },
+                    "preRequestScript": "",
+                    "testScript": "",
+                    "isUser": true
+                },
+                {
+                    "v": "1",
+                    "endpoint": "<<base_url>>/u/users/1",
+                    "name": "Delete User",
+                    "params": [],
+                    "headers": [
+                        {
+                            "key": "Authorization",
+                            "value": "Bearer <<token>>",
+                            "active": true
+                        }
+                    ],
+                    "method": "DELETE",
+                    "auth": {
+                        "authType": "none",
+                        "authActive": true
+                    },
+                    "contentType": null,
+                    "body": null,
+                    "preRequestScript": "",
+                    "testScript": "",
+                    "isUser": true
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "authType": "none",
+        "authActive": true
+    },
+    "headers": []
+}
